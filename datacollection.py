@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import datetime
 import face_recognition
+import pickle
 
 def nothing(x):
     pass
@@ -26,10 +27,18 @@ control_width = 600
 control_height= 500
 img = np.zeros((control_height,control_width,3), np.uint8)
 
+
+if np.DataSource().exists("counters.pickle"):
+    with open('counters.pickle', 'rb') as counters:
+        counts = pickle.load(counters)
+else:
+    sam_pics = 0
+    dan_pics = 0
+    neither_pics = 0
+    counts = [sam_pics, dan_pics, neither_pics]
+
 while 1:
-
     ret, frame = cap.read()
-
     cv2.imshow('current frame --- q to quit all', frame)
     face_locations = face_recognition.face_locations(frame)
 
@@ -47,7 +56,6 @@ while 1:
                                 (5, 430), font, 1, (255, 255, 255), 1, cv2.LINE_AA)
             cv2.putText(img, 'If no face, then from current frame.',
                             (5, 460), font, 1, (255, 255, 255), 1, cv2.LINE_AA)
-
         else:
             pass
 
@@ -65,14 +73,23 @@ while 1:
         if answer == "neither":
             cv2.imwrite("/Users/danielarcese/Desktop/docs/facedatacollection/" + answer
                         + str(datetime.datetime.now()).replace(" ", "-") + '.png', frame)
+            counts[2] += 1
 
         elif face_locations != [] :
             cv2.imwrite("/Users/danielarcese/Desktop/docs/facedatacollection/" + answer
                         + str(datetime.datetime.now()).replace(" ", "-") + '.png', face)
+            if answer == "sam" :
+                counts[0] += 1
+            else:
+                counts[1] += 1
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
+with open('counters.pickle', 'wb') as counters:
+    pickle.dump(counts, counters, protocol=pickle.HIGHEST_PROTOCOL)
 
+
+print(" Sam total : {} \n Dan total : {} \n Neither total : {} ".format(counts[0], counts[1], counts[2]))
 cap.release()
 cv2.destroyAllWindows()
