@@ -12,7 +12,7 @@ answer = "dan"
 dan = "dan"
 sam = "sam"
 neither = "neither"
-font = cv2.FONT_HERSHEY_SIMPLEX
+font = cv2.FONT_ITALIC
 
 control_window = "control window -- q to quit all"
 
@@ -42,9 +42,11 @@ while 1:
         if face_points[2] - face_points[0] < control_height and (face_points[1] - face_points[3]) < control_width :
             img[0: face_points[2] - face_points[0], 0 : face_points[1] - face_points[3]] = face
             cv2.putText(img, 'The captured image will be from the',
-                              (10, 400), font, 1, (255, 255, 255), 1, cv2.LINE_AA)
-            cv2.putText(img, 'your face window. Not this window.',
-                                (10, 450), font, 1, (255, 255, 255), 1, cv2.LINE_AA)
+                              (5, 400), font, 1, (255, 255, 255), 1, cv2.LINE_AA)
+            cv2.putText(img, 'your face window if there is a face.',
+                                (5, 430), font, 1, (255, 255, 255), 1, cv2.LINE_AA)
+            cv2.putText(img, 'If no face, then from current frame.',
+                            (5, 460), font, 1, (255, 255, 255), 1, cv2.LINE_AA)
 
         else:
             pass
@@ -59,9 +61,14 @@ while 1:
     else:
         answer = "neither"
 
-    if saving and face_locations != []:
-        cv2.imwrite("/Users/danielarcese/Desktop/docs/facedatacollection/" + answer
-                    + str(datetime.datetime.now()).replace(" ", "-") + '.png', face)
+    if saving:
+        if answer == "neither":
+            cv2.imwrite("/Users/danielarcese/Desktop/docs/facedatacollection/" + answer
+                        + str(datetime.datetime.now()).replace(" ", "-") + '.png', frame)
+        else:
+            if saving and face_locations != []:
+                cv2.imwrite("/Users/danielarcese/Desktop/docs/facedatacollection/" + answer
+                            + str(datetime.datetime.now()).replace(" ", "-") + '.png', face)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
@@ -69,3 +76,4 @@ while 1:
 
 cap.release()
 cv2.destroyAllWindows()
+
