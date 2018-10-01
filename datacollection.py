@@ -65,10 +65,10 @@ while 1:
         if answer == "neither":
             cv2.imwrite("/Users/danielarcese/Desktop/docs/facedatacollection/" + answer
                         + str(datetime.datetime.now()).replace(" ", "-") + '.png', frame)
-        else:
-            if saving and face_locations != []:
-                cv2.imwrite("/Users/danielarcese/Desktop/docs/facedatacollection/" + answer
-                            + str(datetime.datetime.now()).replace(" ", "-") + '.png', face)
+
+        elif face_locations != [] :
+            cv2.imwrite("/Users/danielarcese/Desktop/docs/facedatacollection/" + answer
+                        + str(datetime.datetime.now()).replace(" ", "-") + '.png', face)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
@@ -76,4 +76,3 @@ while 1:
 
 cap.release()
 cv2.destroyAllWindows()
-
